@@ -1,4 +1,4 @@
-/tsl_config.yaml
+/config.yaml
 *.ipynb
 **/.DS_Store
 
