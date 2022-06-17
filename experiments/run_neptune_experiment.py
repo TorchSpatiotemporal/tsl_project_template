@@ -29,7 +29,7 @@ from tsl.datasets import MetrLA as BenchmarkDataset
 from tsl.predictors import Predictor
 
 
-import tsl_project
+import lib
 
 
 def get_model_class(model_str):
@@ -70,7 +70,7 @@ def configure_parser(parent):
 
     # logging
     parser.add_argument('--save-preds', action='store_true', default=False)
-    parser.add_argument('--project-name', type=str, default=f"{tsl_project.config['neptune_username']}/sandbox")
+    parser.add_argument('--project-name', type=str, default=f"{lib.config['neptune_username']}/sandbox")
     parser.add_argument('--tags', type=str, default=tuple())
     parser.add_argument('--online', type=str_to_bool, nargs='?', const=True, default=False)
 
@@ -102,7 +102,7 @@ def run_experiment(args):
     ########################################
 
     exp_name = f"{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}_{args.seed}"
-    logdir = os.path.join(tsl_project.config['logs_dir'],
+    logdir = os.path.join(lib.config['logs_dir'],
                           args.dataset_name,
                           args.model_name,
                           exp_name)
@@ -184,7 +184,7 @@ def run_experiment(args):
     # add tags
     tags = list(args.tags) + [args.model_name, args.dataset_name]
 
-    npt_logger = TslNeptuneLogger(api_key=tsl_project.config['neptune_token'],
+    npt_logger = TslNeptuneLogger(api_key=lib.config['neptune_token'],
                                   project_name=args.project_name,
                                   experiment_name=exp_name,
                                   tags=tags,
@@ -241,5 +241,5 @@ def run_experiment(args):
 if __name__ == '__main__':
     parser = ArgParser(add_help=False)
     parser = configure_parser(parser)
-    exp = TslExperiment(run_fn=run_experiment, parser=parser, config_path=tsl_project.config['config_dir'])
+    exp = TslExperiment(run_fn=run_experiment, parser=parser, config_path=lib.config['config_dir'])
     exp.run()
